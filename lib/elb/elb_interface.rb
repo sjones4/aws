@@ -231,7 +231,9 @@ module Aws
 
       def tagstart(name, attributes)
 #                puts 'tagstart ' + name + ' -- ' + @xmlpath
-        if (name == 'member' && @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/Listeners')
+        if (name == 'member' && (
+            @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/Listeners' ||
+            @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/ListenerDescriptions' ) )
           @listener = {}
         end
         if (name == 'member' && @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/AvailabilityZones')
@@ -280,7 +282,8 @@ module Aws
             @member[:health_check][:unhealthy_threshold] = @text.to_i
           # AvailabilityZones
           when 'member' then
-            if @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/Listeners'
+            if ( @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/Listeners' ||
+                 @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/ListenerDescriptions' )
               @member[:listeners] << @listener
             elsif @xmlpath == 'DescribeLoadBalancersResponse/DescribeLoadBalancersResult/LoadBalancerDescriptions/member/AvailabilityZones'
               @availability_zone = @text
